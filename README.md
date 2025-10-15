@@ -18,7 +18,9 @@ python3 ./tools/dump_frame.py ./data/SPPencaps_CFDP_metadata_tx.bin  1115 > ./da
 ## TROUBLESHOOTING sync_coding_v0
 # SHIP IT (SEND PACKET THROUGH EACH CHAIN)
 python3 ./grc/sync_coding/sync_coding_v0.py
+
 python3 ./grc/cat_A_tx/cat_A_tx_v0.py
+
 python3 ./grc/Rx_TM/new_rx_chain_v0.py
 
 # COMPARE FRAMES + LOOK FOR ASM
