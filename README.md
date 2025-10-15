@@ -23,9 +23,13 @@ python3 ./grc/Rx_TM/new_rx_chain_v0.py
 
 # COMPARE FRAMES + LOOK FOR ASM
 python3 ./tools/analyze_cadu.py ./data/art/tm_out.bin   1115
+
 python3 ./tools/analyze_cadu.py ./data/art/rand_out.bin 1115
+
 python3 ./tools/analyze_cadu.py ./data/art/rs_out.bin   1275
+
 python3 ./tools/analyze_cadu.py ./data/art/asm_out.bin  1279
+
 python3 ./tools/analyze_cadu.py ./data/art/conv_out.bin 2558
 
 # VIEW HEX FRAME
