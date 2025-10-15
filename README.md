@@ -34,8 +34,11 @@ python3 ./tools/analyze_cadu.py ./data/art/conv_out.bin 2558
 
 # VIEW HEX FRAME
 python3 ./tools/dump_frame.py ./data/art/tag_out.bin  1115 > ./data/art/tag_frame0.hex
+
 python3 ./tools/dump_frame.py ./data/art/tm_out.bin  1115 > ./data/art/tm_frame0.hex
+
 python3 ./tools/dump_frame.py ./data/art/rs_out.bin  1275 > ./data/art/rs_frame0.hex
+
 python3 ./tools/dump_frame.py ./data/art/asm_out.bin 1279 > ./data/art/asm_frame0.hex
 
 ## TROUBLESHOOTING cat_A_tx_V0
