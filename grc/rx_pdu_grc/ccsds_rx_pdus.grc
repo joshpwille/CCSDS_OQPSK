@@ -1,0 +1,194 @@
+options:
+  parameters:
+    author: ''
+    catch_exceptions: 'True'
+    category: '[GRC Hier Blocks]'
+    cmake_opt: ''
+    comment: ''
+    copyright: ''
+    description: ''
+    gen_cmake: 'On'
+    gen_linking: dynamic
+    generate_options: qt_gui
+    hier_block_src_path: '.:'
+    id: ccsds_rx_pdus
+    max_nouts: '0'
+    output_language: python
+    placement: (0,0)
+    qt_qss_theme: ''
+    realtime_scheduling: ''
+    run: 'True'
+    run_command: '{python} -u {filename}'
+    run_options: prompt
+    sizing_mode: fixed
+    thread_safe_setters: ''
+    title: Not titled yet
+    window_size: (1000,1000)
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [8, 8]
+    rotation: 0
+    state: enabled
+
+blocks:
+- name: I_RS
+  id: variable
+  parameters:
+    comment: ''
+    value: '5'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [240, 28.0]
+    rotation: 0
+    state: true
+- name: blocks_file_sink_0
+  id: blocks_file_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    append: 'False'
+    comment: ''
+    file: ''
+    type: byte
+    unbuffered: 'False'
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1408, 220.0]
+    rotation: 0
+    state: true
+- name: blocks_file_source_0
+  id: blocks_file_source
+  parameters:
+    affinity: ''
+    alias: ''
+    begin_tag: pmt.PMT_NIL
+    comment: ''
+    file: /home/dogg/Downloads/tm_stagin_grc/qpsk/data/rx_pdus/viterbi_out.bin
+    length: '0'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    offset: '0'
+    repeat: 'True'
+    type: byte
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [32, 204.0]
+    rotation: 0
+    state: true
+- name: epy_block_0
+  id: epy_block
+  parameters:
+    _source_code: "# add near the other imports\nfrom gnuradio import gr, pdu\nimport\
+      \ pmt\n\nclass pdu_drop_head_asm(gr.basic_block):\n    def __init__(self, n_drop=4):\n\
+      \        gr.basic_block.__init__(self,\n            name=\"pdu_drop_head_asm\"\
+      ,\n            in_sig=None, out_sig=None)\n        self.message_port_register_in(pmt.intern('in'))\n\
+      \        self.message_port_register_out(pmt.intern('out'))\n        self.set_msg_handler(pmt.intern('in'),\
+      \ self.handle)\n\n        self.n_drop = n_drop\n\n    def handle(self, msg):\n\
+      \        meta = pmt.to_python(pmt.car(msg)) or {}\n        vec  = pmt.cdr(msg)\n\
+      \        b    = bytearray(pmt.u8vector_elements(vec))\n        if len(b) >=\
+      \ self.n_drop:\n            b = b[self.n_drop:]           # strip 4-byte ASM\n\
+      \        outp = pmt.cons(pmt.to_pmt(meta), pmt.init_u8vector(len(b), b))\n \
+      \       self.message_port_pub(pmt.intern('out'), outp)\n\n"
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    n_drop: '4'
+  states:
+    _io_cache: ('pdu_drop_head_asm', 'pdu_drop_head_asm', [('n_drop', '4')], [('in',
+      'message', 1)], [('out', 'message', 1)], '', ['n_drop'])
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [472, 236.0]
+    rotation: 0
+    state: enabled
+- name: pdu_pdu_to_tagged_stream_0_0
+  id: pdu_pdu_to_tagged_stream
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    tag: packet_len
+    type: byte
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1168, 236.0]
+    rotation: 0
+    state: enabled
+- name: pdu_tagged_stream_to_pdu_0
+  id: pdu_tagged_stream_to_pdu
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    tag: packet_len
+    type: byte
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [240, 236.0]
+    rotation: 0
+    state: enabled
+- name: satellites_ccsds_descrambler_0
+  id: satellites_ccsds_descrambler
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [928, 244.0]
+    rotation: 0
+    state: enabled
+- name: satellites_decode_rs_ccsds_0
+  id: satellites_decode_rs_ccsds
+  parameters:
+    affinity: ''
+    alias: ''
+    basis: 'False'
+    comment: ''
+    interleave: I_RS
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [672, 228.0]
+    rotation: 0
+    state: enabled
+
+connections:
+- [blocks_file_source_0, '0', pdu_tagged_stream_to_pdu_0, '0']
+- [epy_block_0, out, satellites_decode_rs_ccsds_0, in]
+- [pdu_pdu_to_tagged_stream_0_0, '0', blocks_file_sink_0, '0']
+- [pdu_tagged_stream_to_pdu_0, pdus, epy_block_0, in]
+- [satellites_ccsds_descrambler_0, out, pdu_pdu_to_tagged_stream_0_0, pdus]
+- [satellites_decode_rs_ccsds_0, out, satellites_ccsds_descrambler_0, in]
+
+metadata:
+  file_format: 1
+  grc_version: 3.10.7.0
